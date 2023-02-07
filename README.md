@@ -10,9 +10,16 @@ Para baixar o projeto:
 ```
 
   Dependencias do projeto
+ - Lombok
 - Spring Web
 - Spring Data JPA
 - Postgree Driver
-  
+ 
+ ### :mag_right: Descricao de algumas Dependencias Usadas:
+- Lombok = Atraves do Lombok foi possivel subistituir os Métodos getters and setters das classes do projeto apenas com uma annotation acima da classe (@Getter & @Setter)
+
+
+
+-------
  - @Entity: Essa anotação  é utilizada para informar que uma classe também é uma entidade. A partir disso, a JPA estabelecerá a ligação entre a entidade e uma tabela de mesmo nome no banco de dados, onde os dados de objetos desse tipo poderão ser persistidos.
 - @Id: Definindo com atributo sera o ID da tabela
