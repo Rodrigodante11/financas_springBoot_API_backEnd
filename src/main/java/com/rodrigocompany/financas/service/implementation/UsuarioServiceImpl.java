@@ -1,5 +1,6 @@
 package com.rodrigocompany.financas.service.implementation;
 
+import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Usuario;
 import com.rodrigocompany.financas.model.repository.UsuarioRepository;
 import com.rodrigocompany.financas.service.UsuarioService;
@@ -29,6 +30,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void validarEmail(String email) {
-
+        boolean existe = repository.existsByEmail(email);
+        if(existe){
+            throw new RegraNegocioException("Ja existe um usuario cadastrado com este email");
+        }
     }
 }
