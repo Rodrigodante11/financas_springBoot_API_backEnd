@@ -1,4 +1,4 @@
-package com.rodrigocompany.financas.model.entity;
+package com.rodrigocompany.financas.model.enums;
 
 public enum TipoLancamento {
 

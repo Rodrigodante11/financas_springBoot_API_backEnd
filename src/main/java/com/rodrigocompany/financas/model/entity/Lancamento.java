@@ -1,5 +1,7 @@
 package com.rodrigocompany.financas.model.entity;
 
+import com.rodrigocompany.financas.model.enums.StatusLancamento;
+import com.rodrigocompany.financas.model.enums.TipoLancamento;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
@@ -14,8 +16,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lancamento {
 
     @Id
@@ -52,50 +55,6 @@ public class Lancamento {
     @Column(name="status")
     @Enumerated(value =  EnumType.STRING ) // pega pelo valor (RECEITA,DESPESA)
     private StatusLancamento status;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public Integer getMes() {
-        return mes;
-    }
-
-    public void setMes(Integer mes) {
-        this.mes = mes;
-    }
-
-    public Integer getAno() {
-        return ano;
-    }
-
-    public void setAno(Integer ano) {
-        this.ano = ano;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
 
     @Override
     public boolean equals(Object o) {

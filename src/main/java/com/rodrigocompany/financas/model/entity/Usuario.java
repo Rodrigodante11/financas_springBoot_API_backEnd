@@ -8,13 +8,12 @@ import java.util.Objects;
 
 @Entity
 @Table( name="usuario" , schema = "financas")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 //@Data equivalente ao @Getter, @Setter, @NoArgsConstructor, @AllArgsConstructor, @ToString , @EqualsAndHashCode
 public class Usuario {
 
