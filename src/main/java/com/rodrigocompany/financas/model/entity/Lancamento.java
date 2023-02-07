@@ -1,8 +1,8 @@
 package com.rodrigocompany.financas.model.entity;
 
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-
-import javax.persistence.Convert;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,6 +11,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name="lancamento" , schema = "financas")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Builder
 public class Lancamento {
 
     @Id
@@ -92,59 +97,16 @@ public class Lancamento {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public LocalDate getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(LocalDate dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-
-    public TipoLancamento getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoLancamento tipo) {
-        this.tipo = tipo;
-    }
-
-    public StatusLancamento getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusLancamento status) {
-        this.status = status;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Lancamento that = (Lancamento) o;
-        return id.equals(that.id) && descricao.equals(that.descricao) && mes.equals(that.mes) && ano.equals(that.ano) && usuario.equals(that.usuario) && valor.equals(that.valor) && dataCadastro.equals(that.dataCadastro) && tipo == that.tipo && status == that.status;
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, descricao, mes, ano, usuario, valor, dataCadastro, tipo, status);
-    }
-
-    @Override
-    public String toString() {
-        return "Lancamento{" +
-                "id=" + id +
-                ", descricao='" + descricao + '\'' +
-                ", mes=" + mes +
-                ", ano=" + ano +
-                ", usuario=" + usuario +
-                ", valor=" + valor +
-                ", dataCadastro=" + dataCadastro +
-                ", tipo=" + tipo +
-                ", status=" + status +
-                '}';
+        return getClass().hashCode();
     }
 }
