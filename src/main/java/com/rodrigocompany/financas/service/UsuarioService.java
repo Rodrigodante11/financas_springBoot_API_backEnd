@@ -6,7 +6,7 @@ public interface UsuarioService {
 
     Usuario autenticar(String email, String senha);
 
-    Usuario salvarUusuario(Usuario usuario);
+    Usuario salvarUsuario(Usuario usuario);
 
     void validarEmail(String email); // verificar se o email ja tem na base de dados
 
