@@ -23,3 +23,10 @@ Para baixar o projeto:
 -------
  - @Entity: Essa anotação  é utilizada para informar que uma classe também é uma entidade. A partir disso, a JPA estabelecerá a ligação entre a entidade e uma tabela de mesmo nome no banco de dados, onde os dados de objetos desse tipo poderão ser persistidos.
 - @Id: Definindo com atributo sera o ID da tabela
+
+ ### :mag_right: Pra test foi usado o Junit 5 , unsando mock e spy quando necessario 
+ ### Segue abaixo a principal diferenca entre Mock e Spy
+ 
+O Mock é uma classe cuja implementação é vazia e vc precisa ditar qual será o comportamento dos métodos, ou seja, TODOS os métodos são vazios e retornam valores padrões. Já o Spy é um mock cuja implementação é a original da classe, os métodos não são vazios e chamam a implementação original.
+
+Caso a classe seja apenas uma dependência da classe que vc está testando, então use os mocks, assim vc consegue simular o comportamento dos métodos destas classes. Caso vc precise mockar um método da própria classe que vc está testando, então essa classe precisa ser um Spy , pois como expliquei acima, o Spy chama os métodos originais da classe, porém é possível mockar os métodos dela que são chamados dentro do contexto de teste que vc está realizando.
