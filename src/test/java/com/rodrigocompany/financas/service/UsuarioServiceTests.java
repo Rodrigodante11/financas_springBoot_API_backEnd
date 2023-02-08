@@ -9,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,17 +31,55 @@ public class UsuarioServiceTests {
 	// UsuarioRepository repository; == intancia Original
 	// UsuarioRepository usuarioRepositoryMock = Mockito.mock(UsuarioRepository.class); // instancia fake/mockada
 
-	UsuarioService service;
-	@MockBean
+	@SpyBean // Usamos spies quando dependemos de algum objeto real
+	UsuarioServiceImpl service;
+	@MockBean //Já os mocks representam objetos falsos
 	UsuarioRepository repository;
 
 	//@Before() // usado no Junit 5 spring boot -2.2
-	@BeforeEach
-	public void setUp(){
-		// A linha abaixo foi tirada pois o annotation @MockBean faz a mesma coisa
-		//repository= Mockito.mock(UsuarioRepository.class); // criando um instancia Mock do UsuarioRepository
 
-		service = new UsuarioServiceImpl(repository); // falando pro service usar a instancia Mock de UsuarioRepository (Muito importante essa parte se nao eh um Mock
+	//nao precisa maos do metodo setUp pois o mock e o spy ja estar como annotation
+//	@BeforeEach
+//	public void setUp(){
+//		// A linha abaixo foi tirada pois o annotation @MockBean faz a mesma coisa
+//		// repository= Mockito.mock(UsuarioRepository.class); // criando um instancia Mock do UsuarioRepository
+//
+//
+//		//service = new UsuarioServiceImpl(repository); // falando pro service usar a instancia Mock de UsuarioRepository (Muito importante essa parte se nao eh um Mock
+//		//service = Mockito.spy(UsuarioServiceImpl.class); // Usamos spies quando dependemos de algum objeto real
+//	}
+
+	@Test
+	public void deveSalvarUmNovoUsuario(){
+
+		//verificacao
+		Assertions.assertDoesNotThrow(() -> {
+			//cenario
+			Mockito.doNothing().when(service).validarEmail(Mockito.anyString()); // nao faca nada quando chamar o metodo validarEmail()
+			// por causa da linha acima se usou o spy e nao o mock
+			// O (salvarUsuario) e o (validarEmail) estao dentro do mesmo objeto
+			// napo posso amockar o objeto pois quero testar o (salvarUsuario)
+			// entao se usou o spy para "mockar" apenas o (validarEmail)
+
+
+			Usuario usuario = Usuario.builder()
+					.id(1l)
+					.nome(NOME)
+					.email(EMAIL)
+					.senha(SENHA).build();
+
+				Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+				//acao
+				Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+
+				//verificacao
+				Assertions.assertNotNull(usuarioSalvo);
+				Assertions.assertEquals(usuarioSalvo.getId(),1l);
+				Assertions.assertEquals(usuarioSalvo.getNome(), NOME);
+				Assertions.assertEquals(usuarioSalvo.getEmail(), EMAIL);
+				Assertions.assertEquals(usuarioSalvo.getSenha(), SENHA);
+
+			});
 	}
 
 	//@Test(expected = Test.None.class) Usado no Junit 4 para excessoes / nao espera nenhuma excessao
@@ -60,6 +100,26 @@ public class UsuarioServiceTests {
 
 			// acao
 			service.validarEmail(EMAIL);
+		});
+	}
+
+	@Test
+	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado(){
+
+		//verificacao
+		Assertions.assertThrows(RegraNegocioException.class, () -> {
+			// cenario
+			Usuario usuario = Usuario.builder().email(EMAIL).build();
+
+			//quando chamar o validarEmail lance a escessao RegraNegocioException
+			Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(EMAIL);
+
+			//Acao
+			service.salvarUsuario(usuario);
+
+			// Ja que vai lancar a excessao espero que
+			// nunca chame repository.save(usuario)
+			Mockito.verify(repository, Mockito.never()).save(usuario);
 		});
 	}
 
@@ -130,6 +190,6 @@ public class UsuarioServiceTests {
 		Assertions.assertEquals("Senha invalida", exception.getMessage());
 
 	}
-
-
 }
+
+
