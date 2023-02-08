@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 @ExtendWith( SpringExtension.class)
 @ActiveProfiles("test") // vai procurar o aplication-test.properties e usar o BD em memoria para teste e nao o oficial
-class UsuarioServiceTests {
+public class UsuarioServiceTests {
 
 	public static String EMAIL = "usuario@email.com";
 	public static String NOME = "usuario";
