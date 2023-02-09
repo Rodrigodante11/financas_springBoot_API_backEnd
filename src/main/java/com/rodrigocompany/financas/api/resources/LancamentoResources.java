@@ -1,5 +1,6 @@
 package com.rodrigocompany.financas.api.resources;
 
+import com.rodrigocompany.financas.api.dto.AtualizaStatusDTO;
 import com.rodrigocompany.financas.api.dto.LancamentoDTO;
 import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Lancamento;
@@ -19,12 +20,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/lancamentods")
+@RequestMapping("/api/lancamentos")
 @RequiredArgsConstructor
 public class LancamentoResources {
     // final : tem que ser obrigatoriamente preenchido pelo construtor
     private final LancamentoService lancamentoService;
     private final UsuarioService usuarioService;
+    private final LancamentoRepository lancamentoRepository;
 
     @PostMapping()
     public ResponseEntity salvar(@RequestBody LancamentoDTO lancamentoDTO){ //@RequestBody : receber o json e converter para lancamentoDTO
@@ -86,7 +88,7 @@ public class LancamentoResources {
         lancamentoFiltro.setAno(ano);
 
         Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-        if(usuario.isPresent()){
+        if(!usuario.isPresent()){
             return ResponseEntity.badRequest().body(
                     "Nao foi possivel realizar a consulta, Usuario nao enocntrado para o ID informado");
 
@@ -104,23 +106,56 @@ public class LancamentoResources {
 
     }
 
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO atualizaStatusDTO){
+
+        return lancamentoService.obterPorId(id).map( entity -> {  //entity == lancamento
+                                                    //cast para o enum StatusLancamento
+            StatusLancamento statusSelecionado =  StatusLancamento.valueOf(atualizaStatusDTO.getStatus());
+
+
+                if(statusSelecionado == null){
+                    return ResponseEntity.badRequest().body("Nao foi possivel Atualizar o satstus do lancamento," +
+                            "envie um Status Valido");
+                }
+                try{
+                    entity.setStatus(statusSelecionado);
+                    lancamentoService.atualizar(entity);
+                    return ResponseEntity.ok(entity);
+
+                }catch (RegraNegocioException e){
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                }
+
+        }).orElseGet( () ->
+                new ResponseEntity("Lancamento nao encontrado na base de dados", HttpStatus.BAD_REQUEST)
+        );
+    }
 
     private Lancamento converter(LancamentoDTO lancamentoDTO){
         Usuario usuario = usuarioService
                 .obterPorId(lancamentoDTO.getUsuario())
                 .orElseThrow( () -> new RegraNegocioException("Usuario nao enocntrado para o ID informado."));
 
-        Lancamento lancamento = Lancamento.builder()
-                .id(lancamentoDTO.getId())
-                .descricao(lancamentoDTO.getDescricao())
-                .mes(lancamentoDTO.getMes())
-                .ano(lancamentoDTO.getAno())
-                .valor(lancamentoDTO.getValor())
-                .usuario(usuario)
-                .tipo(TipoLancamento.valueOf(lancamentoDTO.getTipo()))
-                .status(StatusLancamento.valueOf(lancamentoDTO.getStatus()))
-                .build();
+        Lancamento lancamento = new Lancamento();
+        lancamento.setId(lancamentoDTO.getId());
+        lancamento.setDescricao(lancamentoDTO.getDescricao());
+        lancamento.setMes(lancamentoDTO.getMes());
+        lancamento.setAno(lancamentoDTO.getAno());
+        lancamento.setValor(lancamentoDTO.getValor());
+        lancamento.setUsuario(usuario);
+
+                                                                     //cast para o enum TipoLancamento
+        if (lancamentoDTO.getTipo() != null) lancamento.setTipo(TipoLancamento.valueOf(lancamentoDTO.getTipo()));
+                                                                    //cast para o enum TipoLancamento
+        if (lancamentoDTO.getStatus() !=null) lancamento.setStatus(StatusLancamento.valueOf(lancamentoDTO.getStatus()));
 
         return lancamento;
+    }
+
+
+    @GetMapping("/gg")
+    public String teste(){
+        return "teste gg editado";
     }
 }

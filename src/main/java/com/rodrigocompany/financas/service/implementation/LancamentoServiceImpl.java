@@ -29,6 +29,7 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Transactional //aquela logica do faz tudo ou nao faz nada no BD
     public Lancamento salvar(Lancamento lancamento) {
         validar(lancamento);
+        lancamento.setStatus(StatusLancamento.PENDENTE);
         return lancamentoRepository.save(lancamento);
     }
 
@@ -56,13 +57,13 @@ public class LancamentoServiceImpl implements LancamentoService {
                 ExampleMatcher.matching()
                         .withIgnoreCase()   // ignorar maisculo e minusculo
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
-                        //nao precisa ter toda a inpofrmcao do nome, email
+
+                        // nao precisa ter toda a inpofrmcao do nome, email
                         // para procurar exemplo(rod) iria achar (rodrigo)
 
                         //.withStringMatcher(ExampleMatcher.StringMatcher.STARTING)); // acha todas com Inicio (rod)
                         //.withStringMatcher(ExampleMatcher.StringMatcher.ENDING)); // acha todas com Fim (rod)
                         //.withStringMatcher(ExampleMatcher.StringMatcher.EXACT)); // so acha (rodrigo) se escrever o nome inteiro
-
 
         return lancamentoRepository.findAll(example);
     }
