@@ -3,6 +3,7 @@ package com.rodrigocompany.financas.service.implementation;
 import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Lancamento;
 import com.rodrigocompany.financas.model.enums.StatusLancamento;
+import com.rodrigocompany.financas.model.enums.TipoLancamento;
 import com.rodrigocompany.financas.model.repository.LancamentoRepository;
 import com.rodrigocompany.financas.service.LancamentoService;
 
@@ -38,7 +39,6 @@ public class LancamentoServiceImpl implements LancamentoService {
     public Lancamento atualizar(Lancamento lancamento) {
         Objects.requireNonNull(lancamento.getId()); // salvar e atualiza usa o mesmo metodo save() o que muda eh o envio do ID
         validar(lancamento);
-        lancamento.setStatus(StatusLancamento.PENDENTE); // mudando status antes de Salvar
         return lancamentoRepository.save(lancamento);
     }
 
@@ -105,6 +105,25 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public Optional<Lancamento> obterPorId(Long id) {
+
         return lancamentoRepository.findById(id);
+    }
+    @Override
+    @Transactional(readOnly = true) //logica faz tudo porem com apenas leitura
+    public BigDecimal obterSaldoPorUsuario(Long id){
+        // TipoLancamento.RECEITA.name() == Tranforma o RECEITA em String
+        BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentodeUsuario(id,
+                TipoLancamento.RECEITA);
+
+        BigDecimal despesas = lancamentoRepository.obterSaldoPorTipoLancamentodeUsuario(id,
+                TipoLancamento.DESPESA);
+
+        if(receitas == null){
+            receitas= BigDecimal.ZERO;
+        }if(despesas == null){
+            despesas= BigDecimal.ZERO;
+        }
+
+        return receitas.subtract(despesas);
     }
 }

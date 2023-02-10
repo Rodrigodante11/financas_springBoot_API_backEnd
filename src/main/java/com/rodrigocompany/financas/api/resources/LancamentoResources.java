@@ -41,7 +41,7 @@ public class LancamentoResources {
 
     }
     @PutMapping("{id}") // para atualizar @PutMapping("{id}") com o ID do Objeto a ser atualizado
-    public ResponseEntity atualizar(@PathVariable("id") Long id , @RequestBody LancamentoDTO lancamentoDTO){
+    public ResponseEntity atualizaStatus(@PathVariable("id") Long id , @RequestBody LancamentoDTO lancamentoDTO){
 
         return lancamentoService.obterPorId(id).map( entity -> {
 
@@ -110,6 +110,7 @@ public class LancamentoResources {
     public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO atualizaStatusDTO){
 
         return lancamentoService.obterPorId(id).map( entity -> {  //entity == lancamento
+
                                                     //cast para o enum StatusLancamento
             StatusLancamento statusSelecionado =  StatusLancamento.valueOf(atualizaStatusDTO.getStatus());
 
