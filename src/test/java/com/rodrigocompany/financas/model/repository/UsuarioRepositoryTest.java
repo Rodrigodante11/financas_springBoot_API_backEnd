@@ -1,6 +1,9 @@
 package com.rodrigocompany.financas.model.repository;
 
+import com.rodrigocompany.financas.model.entity.Lancamento;
 import com.rodrigocompany.financas.model.entity.Usuario;
+import com.rodrigocompany.financas.model.enums.StatusLancamento;
+import com.rodrigocompany.financas.model.enums.TipoLancamento;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +17,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 
 @ExtendWith( SpringExtension.class)
-@ActiveProfiles("test") // vai procurar o aplication-test.properties e usar o BD em memoria para teste e nao o oficial
-@DataJpaTest // Cria uma instancia do banco de dados em memoria e ao finalizar os testes ela deleta da memoria
-@AutoConfigureTestDatabase(replace = Replace.NONE) //o @DataJpaTest cria um instancia propria do BD , com essa anotation dessa linha ele nao sobrescreve a configuracao e vai usuar o (aplication-test.properties)
+@ActiveProfiles("test") // vai procurar o aplication-test.properties e usar o BD em memória para teste e nao o oficial
+@DataJpaTest // Cria uma instância do banco de dados em memória e ao finalizar os testes ela deleta da memória
+@AutoConfigureTestDatabase(replace = Replace.NONE) //o @DataJpaTest cria uma instância propria do (BD) , com essa anotation dessa linha ele nao sobrescreve a configuracao e vai usuar o (aplication-test.properties)
 public class UsuarioRepositoryTest {
 
     public static String EMAIL = "usuario@email.com";
