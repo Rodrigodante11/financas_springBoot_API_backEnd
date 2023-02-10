@@ -1,3 +1,7 @@
+// MUITO IMPORTANTEEEEE SE ESTOU TESTANDO OS METODOS DA CLASSE SERVICE
+// OS METODOS DE REPOSTORY USADOS DEVE SER MOCKADOS POIS NAO QUERO TESTAR O REPOSITRY DUAS VEZES
+// JA QUE OS TESTES DE REPOSITORY JA ESTAO FEITOS E APROVADO
+
 package com.rodrigocompany.financas.service;
 
 import com.rodrigocompany.financas.exception.ErroAutenticacao;
@@ -32,9 +36,9 @@ public class UsuarioServiceTests {
 	// UsuarioRepository usuarioRepositoryMock = Mockito.mock(UsuarioRepository.class); // instancia fake/mockada
 
 	@SpyBean // Usamos spies quando dependemos de algum objeto real
-	UsuarioServiceImpl service;
+	UsuarioServiceImpl service; // classe que sera testada
 	@MockBean //Já os mocks representam objetos falsos
-	UsuarioRepository repository;
+	UsuarioRepository repository;  // classe que nao queremos testar e sera mockada
 
 	//@Before() // usado no Junit 5 spring boot -2.2
 

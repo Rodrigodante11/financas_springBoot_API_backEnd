@@ -106,7 +106,7 @@ public class UsuarioRepositoryTest {
         entityManager.persist(usuario); // para usar o persist(Objeto) nao pode ter ID se nao gera excessao
 
         //Acao/execucao
-        Optional<Usuario> result = repository.findByEmail(EMAIL);
+        Optional<Usuario> result = repository.findByEmail(" ERRADO");
 
         //verificacao
         Assertions.assertThat(result.isPresent()).isFalse();
