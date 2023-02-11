@@ -1,30 +1,25 @@
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
 <h1 aligh="center"> Financas com Spring Boot/React e PostgreeSQL <h2>
-<strong>Financas com Java 17</strong>
+<strong>Financas com Java 17 </strong> </br>
+<strong>Spring-boot 2.7.8 </strong> </br>
+<strong>Junit 5</strong></br></br>
   
 Para baixar o projeto:
 
 ```
-[https://github.com/Rodrigodante11/Ponto_Venda_Java_Web_Spring.git](https://github.com/Rodrigodante11/financas_springboot_react.git)
+https://github.com/Rodrigodante11/Ponto_Venda_Java_Web_Spring.git
 ```
 
-  Dependencias do projeto
- - Lombok
+ Dependencias do projeto
+- Lombok
 - Spring Web
 - Spring Data JPA
 - Postgree Driver
+- devtools
  
- ### :mag_right: Descricao de algumas Dependencias Usadas:
-- Lombok = Atraves do Lombok foi possivel subistituir os Métodos getters and setters das classes do projeto apenas com uma annotation acima da classe (@Getter & @Setter)
 
-
-
--------
- - @Entity: Essa anotação  é utilizada para informar que uma classe também é uma entidade. A partir disso, a JPA estabelecerá a ligação entre a entidade e uma tabela de mesmo nome no banco de dados, onde os dados de objetos desse tipo poderão ser persistidos.
-- @Id: Definindo com atributo sera o ID da tabela
-
- ### :mag_right: Pra test foi usado o Junit 5 , unsando mock e spy quando necessario 
+ ### :mag_right: Para test unitarios foi usado o Junit 5 , usando mock e spy 
  ### Segue abaixo a principal diferenca entre Mock e Spy
  
 O Mock é uma classe cuja implementação é vazia e vc precisa ditar qual será o comportamento dos métodos, ou seja, TODOS os métodos são vazios e retornam valores padrões. Já o Spy é um mock cuja implementação é a original da classe, os métodos não são vazios e chamam a implementação original.
