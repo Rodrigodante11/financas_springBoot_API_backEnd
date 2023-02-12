@@ -4,12 +4,10 @@ import com.rodrigocompany.financas.api.dto.UsuarioDTO;
 import com.rodrigocompany.financas.exception.ErroAutenticacao;
 import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Usuario;
-import com.rodrigocompany.financas.model.enums.TipoLancamento;
 import com.rodrigocompany.financas.model.repository.LancamentoRepository;
 import com.rodrigocompany.financas.service.LancamentoService;
 import com.rodrigocompany.financas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/usuario")
 @RequiredArgsConstructor
-public class UsuarioResouce {
+public class UsuarioResource {
 
    private final UsuarioService usuarioService ;
    private final LancamentoRepository lancamentoRepository;

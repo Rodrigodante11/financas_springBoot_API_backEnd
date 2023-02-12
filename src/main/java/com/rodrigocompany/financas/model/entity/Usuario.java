@@ -1,5 +1,6 @@
 package com.rodrigocompany.financas.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -28,6 +29,7 @@ public class Usuario {
     private String email;
 
     @Column(name="senha")
+    @JsonIgnore // pra nao exibir a senha no teste (deveAutenticarUmUsuario) em (UsuarioResouceTest)
     private String senha;
 
     @Override
