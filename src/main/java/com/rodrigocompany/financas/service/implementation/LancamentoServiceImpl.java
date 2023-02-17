@@ -115,11 +115,13 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Transactional(readOnly = true) //logica faz tudo porem com apenas leitura
     public BigDecimal obterSaldoPorUsuario(Long id){
         // TipoLancamento.RECEITA.name() == Tranforma o RECEITA em String
-        BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentodeUsuario(id,
-                TipoLancamento.RECEITA);
+        // Busca todos os do TIPO RECEITA e Status EFETIVADO com o ID passado
+        BigDecimal receitas = lancamentoRepository.obterSaldoPorTipoLancamentodeUsuarioEStatus(id,
+                TipoLancamento.RECEITA, StatusLancamento.EFETIVADO); //
 
-        BigDecimal despesas = lancamentoRepository.obterSaldoPorTipoLancamentodeUsuario(id,
-                TipoLancamento.DESPESA);
+        // Busca todos os do TIPO despesa e Status EFETIVADO com o ID passado
+        BigDecimal despesas = lancamentoRepository.obterSaldoPorTipoLancamentodeUsuarioEStatus(id,
+                TipoLancamento.DESPESA, StatusLancamento.EFETIVADO);
 
         if(receitas == null){
             receitas= BigDecimal.ZERO;
