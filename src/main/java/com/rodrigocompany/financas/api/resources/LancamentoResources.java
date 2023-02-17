@@ -40,16 +40,63 @@ public class LancamentoResources {
         }
 
     }
-    @PutMapping("{id}") // para atualizar @PutMapping("{id}") com o ID do Objeto a ser atualizado
-    public ResponseEntity atualizaStatus(@PathVariable("id") Long id , @RequestBody LancamentoDTO lancamentoDTO){
 
+
+
+    @GetMapping("{id}")
+    public ResponseEntity obterLancamentoPorId(@PathVariable("id") Long id){
+        return lancamentoService.obterPorId(id)
+                .map( lancamneto -> new ResponseEntity(
+                        converterParaDTO(lancamneto), HttpStatus.OK
+                        )
+                ).orElseGet( () -> new ResponseEntity((HttpStatus.NOT_FOUND) ));
+    }
+
+    private LancamentoDTO converterParaDTO(Lancamento lancamento){
+        return LancamentoDTO.builder()
+                .id(lancamento.getId())
+                .descricao(lancamento.getDescricao())
+                .valor(lancamento.getValor())
+                .mes(lancamento.getMes())
+                .ano(lancamento.getAno())
+                .status(lancamento.getStatus().name())  // name() para converter enum em string
+                .tipo(lancamento.getTipo().name()) // name() para converter enum em string
+                .usuario(lancamento.getUsuario().getId()).build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity atualizar( @PathVariable("id") Long id, @RequestBody LancamentoDTO dto ) {
         return lancamentoService.obterPorId(id).map( entity -> {
+            try {
+                Lancamento lancamento = converter(dto);
+                lancamento.setId(entity.getId());
+                lancamentoService.atualizar(lancamento);
+                return ResponseEntity.ok(lancamento);
+            }catch (RegraNegocioException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }).orElseGet( () ->
+                new ResponseEntity("Lancamento não encontrado na base de Dados.", HttpStatus.BAD_REQUEST) );
+    }
 
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO atualizaStatusDTO){
+
+        return lancamentoService.obterPorId(id).map( entity -> {  //entity == lancamento
+
+            //cast para o enum StatusLancamento
+            StatusLancamento statusSelecionado =  StatusLancamento.valueOf(atualizaStatusDTO.getStatus());
+
+
+            if(statusSelecionado == null){
+                return ResponseEntity.badRequest().body("Nao foi possivel Atualizar o satstus do lancamento," +
+                        "envie um Status Valido");
+            }
             try{
-                Lancamento lancamentoEntidade = converter(lancamentoDTO);
-                lancamentoDTO.setId(entity.getId());
-                lancamentoService.atualizar(lancamentoEntidade);
-                return ResponseEntity.ok(lancamentoEntidade);
+                entity.setStatus(statusSelecionado);
+                lancamentoService.atualizar(entity);
+                return ResponseEntity.ok(entity);
+
             }catch (RegraNegocioException e){
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
@@ -86,7 +133,6 @@ public class LancamentoResources {
         lancamentoFiltro.setDescricao(descricao);
         lancamentoFiltro.setMes(mes);
         lancamentoFiltro.setAno(ano);
-
         Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
         if(!usuario.isPresent()){
             return ResponseEntity.badRequest().body(
@@ -104,33 +150,6 @@ public class LancamentoResources {
         List<Lancamento> lancamentoList= lancamentoService.buscar(lancamentoFiltro);
         return ResponseEntity.ok(lancamentoList);
 
-    }
-
-    @PutMapping("{id}/atualiza-status")
-    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO atualizaStatusDTO){
-
-        return lancamentoService.obterPorId(id).map( entity -> {  //entity == lancamento
-
-                                                    //cast para o enum StatusLancamento
-            StatusLancamento statusSelecionado =  StatusLancamento.valueOf(atualizaStatusDTO.getStatus());
-
-
-                if(statusSelecionado == null){
-                    return ResponseEntity.badRequest().body("Nao foi possivel Atualizar o satstus do lancamento," +
-                            "envie um Status Valido");
-                }
-                try{
-                    entity.setStatus(statusSelecionado);
-                    lancamentoService.atualizar(entity);
-                    return ResponseEntity.ok(entity);
-
-                }catch (RegraNegocioException e){
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                }
-
-        }).orElseGet( () ->
-                new ResponseEntity("Lancamento nao encontrado na base de dados", HttpStatus.BAD_REQUEST)
-        );
     }
 
     private Lancamento converter(LancamentoDTO lancamentoDTO){
