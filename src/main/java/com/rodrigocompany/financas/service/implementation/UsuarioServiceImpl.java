@@ -5,6 +5,7 @@ import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Usuario;
 import com.rodrigocompany.financas.model.repository.UsuarioRepository;
 import com.rodrigocompany.financas.service.UsuarioService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //@Autowired
     private UsuarioRepository repository;
+    private PasswordEncoder passwordEncoder;
 
     //@Autowired
-    public UsuarioServiceImpl(UsuarioRepository repository) {
+    public UsuarioServiceImpl(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -31,7 +35,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         }
 
-        if(!usuario.get().getSenha().equals(senha)) { // apos verificar o email faz a verificacao se a senha eh igual
+        boolean senhaBatem = passwordEncoder.matches(senha, usuario.get().getSenha());
+
+        if(!senhaBatem) { // apos verificar o email faz a verificacao se a senha eh igual
             throw new ErroAutenticacao("Senha invalida");
         }
 
@@ -39,10 +45,21 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     }
 
+    private void cripografarSenha(Usuario usuario){
+
+        // criptografando a senha
+        String senha = usuario.getSenha();
+        String senhaCripto = passwordEncoder.encode(senha);
+        usuario.setSenha(senhaCripto);
+
+    }
+
     @Override
     @Transactional  //aquela logica do faz tudo ou nao faz nada no BD
     public Usuario salvarUsuario(Usuario usuario) {
+
         validarEmail(usuario.getEmail());
+        cripografarSenha(usuario);
         return repository.save(usuario);
 
     }
