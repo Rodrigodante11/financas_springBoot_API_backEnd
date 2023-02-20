@@ -1,10 +1,12 @@
 package com.rodrigocompany.financas.api.resources;
 
+import com.rodrigocompany.financas.api.dto.TokenDTO;
 import com.rodrigocompany.financas.api.dto.UsuarioDTO;
 import com.rodrigocompany.financas.exception.ErroAutenticacao;
 import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Usuario;
 import com.rodrigocompany.financas.model.repository.LancamentoRepository;
+import com.rodrigocompany.financas.service.JwtService;
 import com.rodrigocompany.financas.service.LancamentoService;
 import com.rodrigocompany.financas.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +27,37 @@ public class UsuarioResource {
 
    private final LancamentoService lancamentoService;
 
+   private final JwtService jwtService;
+
    @PostMapping("/autenticar")
-   public ResponseEntity autenticar(@RequestBody UsuarioDTO usuarioDTO){
+   public ResponseEntity<?> autenticar(@RequestBody UsuarioDTO usuarioDTO){
       try{
          Usuario usuarioAutenticado = usuarioService.autenticar(usuarioDTO.getEmail(), usuarioDTO.getSenha());
 
-         // return new ResponseEntity(body, status);
-         return ResponseEntity.ok(usuarioAutenticado);
+         String token = jwtService.gerarToken(usuarioAutenticado);
+         TokenDTO tokenDTO = new TokenDTO( usuarioAutenticado.getNome(), token);
+
+         return ResponseEntity.ok(tokenDTO);
 
       }catch(ErroAutenticacao e){
          return ResponseEntity.badRequest().body(e.getMessage());
 
       }
    }
+
+//   @PostMapping("/autenticar")
+//   public ResponseEntity autenticar(@RequestBody UsuarioDTO usuarioDTO){
+//      try{
+//         Usuario usuarioAutenticado = usuarioService.autenticar(usuarioDTO.getEmail(), usuarioDTO.getSenha());
+//
+//         // return new ResponseEntity(body, status);
+//         return ResponseEntity.ok(usuarioAutenticado);
+//
+//      }catch(ErroAutenticacao e){
+//         return ResponseEntity.badRequest().body(e.getMessage());
+//
+//      }
+//   }
 
    @PostMapping
    public ResponseEntity salvar(@RequestBody UsuarioDTO usuarioDTO){// @RequestBody: os dados json vindo do request sera o objeto usuarioDTO tem todos os atributos do objeto
