@@ -6,6 +6,7 @@ import com.rodrigocompany.financas.exception.ErroAutenticacao;
 import com.rodrigocompany.financas.exception.RegraNegocioException;
 import com.rodrigocompany.financas.model.entity.Usuario;
 import com.rodrigocompany.financas.model.repository.LancamentoRepository;
+import com.rodrigocompany.financas.service.JwtService;
 import com.rodrigocompany.financas.service.LancamentoService;
 import com.rodrigocompany.financas.service.UsuarioService;
 
@@ -18,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,8 +47,15 @@ public class UsuarioResourceTest {
     @MockBean
     LancamentoRepository lancamentoRepository;
 
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private JwtService jwtService;
+
     @Test
     public void deveAutenticarUmUsuario() throws Exception {
+
         //Cenario
         String email ="usuario@email.com";
         String senha = "123";
@@ -72,6 +81,8 @@ public class UsuarioResourceTest {
                                                     .contentType(JSON) // E ESTOU ENVIADO OBJETO DO TIPO  JSON
                                                     .content(json); // E objetoJson Enviado
 
+
+
         mvc.perform(request) // PERDORM == EXECUTA A REQUISICAO
                 .andExpect(MockMvcResultMatchers.status().isOk()) // ESPERO UM STATUS OK e abaixo o json com cahve Valor
                 .andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getId()))
@@ -89,6 +100,7 @@ public class UsuarioResourceTest {
                 .email(email)
                 .senha(senha).build();
 
+        Mockito.when(jwtService.gerarToken((Mockito.any(Usuario.class)))).thenReturn("usuario");
 
         // mockito para o metodo autenticar de usuario pois isso ja foi testado em usuarioServiceTest
         Mockito.when(usuarioService.autenticar(email,senha)).thenThrow(ErroAutenticacao.class);
@@ -157,7 +169,8 @@ public class UsuarioResourceTest {
                 .senha(senha).build();
 
         // salvar Usuario com qualquer usuario enviado pelo mockito entao retorna o usuario criado acima
-        Mockito.when(usuarioService.salvarUsuario(Mockito.any(Usuario.class))).thenThrow(RegraNegocioException.class);
+        Mockito.when(usuarioService.autenticar(Mockito.anyString(),Mockito.anyString())).thenThrow(ErroAutenticacao.class);
+
 
         String json = new ObjectMapper().writeValueAsString(usuarioDTO); // cast para Json
 

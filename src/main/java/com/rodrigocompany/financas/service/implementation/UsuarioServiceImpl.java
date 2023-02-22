@@ -44,7 +44,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     }
 
-    private void cripografarSenha(Usuario usuario){
+    public void cripografarSenha(Usuario usuario){
 
         // criptografando a senha
         String senha = usuario.getSenha();

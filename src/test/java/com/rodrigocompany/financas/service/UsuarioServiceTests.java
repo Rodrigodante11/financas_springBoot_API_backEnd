@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -39,6 +40,9 @@ public class UsuarioServiceTests {
 	UsuarioServiceImpl service; // classe que sera testada
 	@MockBean //Já os mocks representam objetos falsos
 	UsuarioRepository repository;  // classe que nao queremos testar e sera mockada
+
+	@MockBean //Já os mocks representam objetos falsos
+	private PasswordEncoder passwordEncoder;  // classe que nao queremos testar e sera mockada
 
 	//@Before() // usado no Junit 5 spring boot -2.2
 
@@ -73,6 +77,10 @@ public class UsuarioServiceTests {
 					.senha(SENHA).build();
 
 				Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+
+				// nao quero testar o metodo (cripografarSenha)
+				Mockito.doNothing().when(service).cripografarSenha(usuario); // mesma classe que estou tentando
+
 				//acao
 				Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
 
@@ -156,7 +164,9 @@ public class UsuarioServiceTests {
 		Assertions.assertDoesNotThrow(() -> {
 			// cenario
 			Usuario usuario = Usuario.builder().email(EMAIL).senha(SENHA).id(1L).build();
+
 			Mockito.when(repository.findByEmail(EMAIL)).thenReturn(Optional.of(usuario));
+			Mockito.when(passwordEncoder.matches(Mockito.anyString(),Mockito.anyString())).thenReturn(true);
 
 			// acao
 			service.autenticar(EMAIL,SENHA);
