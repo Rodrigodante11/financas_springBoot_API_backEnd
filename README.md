@@ -3,7 +3,8 @@
 <strong>Repositorio do BackEnd SpringBootAPI</strong> </br>
 <strong>Java 17 </strong> </br>
 <strong>Spring-boot 2.7.8 </strong> </br>
-<strong>Junit 5</strong></br></br>
+<strong>Junit 5</strong></br>
+<strong>Token JWT</strong></br></br>
   
 Para baixar o projeto BACKEND SpringBootAPI:
 
@@ -23,8 +24,6 @@ https://github.com/Rodrigodante11/financas_React_frontEnd.git
 - Spring Data JPA
 - Postgree Driver
 - devtools
-- Token JWT
- 
 
  ### :mag_right: Para test unitarios foi usado o Junit 5 , usando mock e spy 
  ### Segue abaixo a principal diferenca entre Mock e Spy
