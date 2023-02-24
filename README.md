@@ -23,6 +23,7 @@ https://github.com/Rodrigodante11/financas_React_frontEnd.git
 - Spring Data JPA
 - Postgree Driver
 - devtools
+- Token JWT
  
 
  ### :mag_right: Para test unitarios foi usado o Junit 5 , usando mock e spy 
